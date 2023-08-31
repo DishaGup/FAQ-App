@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { askQuestion } from '../redux/faq/faqAction';
-import { useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { askQuestion } from "../redux/faq/faqAction";
+import { useDispatch } from "react-redux";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -22,13 +22,13 @@ const ModalContent = styled.div`
 `;
 
 const AddQuestionModal = ({ isOpen, onClose }) => {
-  const [questionTitle, setQuestionTitle] = useState('');
-  const [questionContent, setQuestionContent] = useState('');
-const dispatch =useDispatch()
+  const [questionTitle, setQuestionTitle] = useState("");
+  const [questionContent, setQuestionContent] = useState("");
+  const dispatch = useDispatch();
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-  dispatch(askQuestion( questionTitle, questionContent))
+
+    dispatch(askQuestion(questionTitle, questionContent));
     onClose();
   };
 

@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
 
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import { FcCheckmark, FcCancel } from 'react-icons/fc';
-import { PrimaryButton } from '../styles/Button';
-import ErrorAlert from '../styles/ErrorAlert';
-import { registerRequest } from '../redux/auth/authAction';
-import { useDispatch, useSelector } from 'react-redux';
-
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { FcCheckmark, FcCancel } from "react-icons/fc";
+import { PrimaryButton } from "../styles/Button";
+import ErrorAlert from "../styles/ErrorAlert";
+import { registerRequest } from "../redux/auth/authAction";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialState = {
-    role:"User",
-    password: "",
-    email: "",
-  };
+  role: "User",
+  password: "",
+  email: "",
+};
 
 const Container = styled.div`
   padding: 20px;
@@ -73,7 +72,7 @@ const StyledLabel = styled.label`
 `;
 
 const StyledInput = styled.input`
-  border: 1px dotted #8BC34A;
+  border: 1px dotted #8bc34a;
   padding: 8px;
 `;
 
@@ -103,95 +102,84 @@ const StyledText = styled.p`
   text-decoration: underline;
 `;
 
-
 const RegisterPage = () => {
+  const [formData, setFormData] = useState(initialState);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { error, token } = useSelector((store) => store.authReducer);
+  console.log(error, token);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-    const [formData, setFormData] = useState(initialState);
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { error ,token } = useSelector((store) => store.authReducer);
-    console.log(error,token)
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    };
-  
-    const handleSubmit = (e) => {
-      e.preventDefault();
-   // console.log(formData)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     try {
-      dispatch(registerRequest(formData));
-     // Rest of your logic for success
-   } catch (err) {
-     // Rest of your logic for error
-     console.log(err)
-   }
+      dispatch(registerRequest(formData)).then(() => navigate("/"));
+    } catch (err) {
+      console.log(err);
+    }
     setFormData(initialState);
-    };
-
+  };
 
   return (
     <Container>
-    <FormBox>
-      <StyledH2>Register</StyledH2>
-      {
-          error != null && <ErrorAlert message={error} /> 
-        }
-      <StyledForm onSubmit={handleSubmit}>
-        <StyledLabel>
-          <StyledText as="span">Email</StyledText>
-          <StyledInput
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter Your Email"
-          />
-        </StyledLabel>
+      <FormBox>
+        <StyledH2>Register</StyledH2>
+        {error != null && <ErrorAlert message={error} />}
+        <StyledForm onSubmit={handleSubmit}>
+          <StyledLabel>
+            <StyledText as="span">Email</StyledText>
+            <StyledInput
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter Your Email"
+            />
+          </StyledLabel>
 
-        <StyledLabel>
-          <StyledText as="span">Password</StyledText>
-          <StyledInput
-            name="password"
-            placeholder="Type Password"
-            value={formData.password}
-            onChange={handleChange}
-            type={showPassword ? 'text' : 'password'}
-          />
-          <PasswordToggle onClick={() => setShowPassword((prev) => !prev)}>
-            {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
-          </PasswordToggle>
-        </StyledLabel>
-        <StyledLabel>
-          <StyledText as="span">Role</StyledText>
-          <StyledInput
-            type="text"
-            name="role"
-            value={"User"}           
-          />
-        </StyledLabel>
-        <PrimaryButton
-          type="submit"
-          variant="outline"
-          size="lg"
-          border="1px solid #7CB342"
-          color="#76FF03"
-          borderRadius="5px"
-        >
-          Register
-        </PrimaryButton>
+          <StyledLabel>
+            <StyledText as="span">Password</StyledText>
+            <StyledInput
+              name="password"
+              placeholder="Type Password"
+              value={formData.password}
+              onChange={handleChange}
+              type={showPassword ? "text" : "password"}
+            />
+            <PasswordToggle onClick={() => setShowPassword((prev) => !prev)}>
+              {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+            </PasswordToggle>
+          </StyledLabel>
+          <StyledLabel>
+            <StyledText as="span">Role</StyledText>
+            <StyledInput type="text" name="role" value={"User"} />
+          </StyledLabel>
+          <PrimaryButton
+            type="submit"
+            variant="outline"
+            size="lg"
+            border="1px solid #7CB342"
+            color="#76FF03"
+            borderRadius="5px"
+          >
+            Register
+          </PrimaryButton>
 
-        <StyledText>
-        Already have an account?{" "} <Link to="/login">Login</Link>
-        </StyledText>
-      </StyledForm>
-    </FormBox>
-  </Container>
-  )
-}
+          <StyledText>
+            Already have an account? <Link to="/login">Login</Link>
+          </StyledText>
+        </StyledForm>
+      </FormBox>
+    </Container>
+  );
+};
 
-export default RegisterPage
+export default RegisterPage;

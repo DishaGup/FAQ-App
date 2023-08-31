@@ -1,21 +1,23 @@
 import {
-  GET_ALL_QUESTIONS_SUCCESS, GET_QUESTION_SUCCESS, ASK_QUESTION_SUCCESS,
+  GET_ALL_QUESTIONS_SUCCESS,
+  GET_QUESTION_SUCCESS,
+  ASK_QUESTION_SUCCESS,
   ANSWER_QUESTION_SUCCESS,
   APPROVE_QUESTION_SUCCESS,
   DELETE_QUESTION_SUCCESS,
   RATE_ANSWER_SUCCESS,
-} from './faqAction';
-
+  SEARCH_QUESTIONS_SUCCESS,
+} from "./faqAction";
 
 const initialState = {
   askQuestionSuccess: false,
   answerQuestionSuccess: false,
- 
+  searchResults: [],
   rateAnswerSuccess: false,
   answerLoading: false,
   answerError: null,
   questions: [],
-  question: {}
+  question: {},
 };
 
 const faqReducer = (state = initialState, action) => {
@@ -48,6 +50,12 @@ const faqReducer = (state = initialState, action) => {
         ...state,
         question: action.payload, // Store the fetched questions
       };
+    case SEARCH_QUESTIONS_SUCCESS:
+      return {
+        ...state,
+        searchResults: action.payload, // Store the fetched questions
+      };
+
     default:
       return state;
   }

@@ -68,7 +68,6 @@ faqRouter.post("/answer/:questionId", verifyToken, async (req, res) => {
   }
 });
 
-
 // Rate an Answer
 
 faqRouter.post("/answer/:answerId/rate", verifyToken, async (req, res) => {
@@ -111,5 +110,26 @@ faqRouter.get("/question/:questionId", async (req, res) => {
   }
 });
 
+faqRouter.get("/search", async (req, res) => {
+  try {
+    const searchTerm = req.query.q;
+
+    if (!searchTerm || searchTerm.length < 3) {
+      return res
+        .status(400)
+        .json({ error: "Search term should be at least 3 characters long." });
+    }
+
+    const regex = new RegExp(searchTerm, "i"); // Case-insensitive search
+
+    const questions = await Question.find({ content: regex }).sort({
+      createdAt: -1,
+    });
+
+    res.json(questions);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while searching." });
+  }
+});
 
 module.exports = faqRouter;

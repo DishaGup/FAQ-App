@@ -5,7 +5,7 @@ const answerSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   rating: { type: Number, default: 0 },
   question: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true }, // Add this field
-
+  isApproved: { type: Boolean, default: false },
 }, { timestamps: true });
 
 const Answer = mongoose.model('Answer', answerSchema);

@@ -1,25 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-//import debounce from 'lodash/debounce';
-import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useNavigate } from 'react-router-dom';
-//import { USER_LOGOUT_SUCCESS } from '../Redux/actionTypes';
-import { FcUnlock, FcLock } from 'react-icons/fc';
-import { GiHamburgerMenu } from 'react-icons/gi';
-//import { searchTaskInfo } from '../Redux/action';
-//import SearchBarResults from './SearchBarResults';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+
+import { useDispatch, useSelector } from "react-redux";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+
+import { FcUnlock, FcLock } from "react-icons/fc";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { searchQuestions } from "../redux/faq/faqAction";
+
 
 const Header = styled.header`
   width: 100%;
-  position:absolute;
-  top:0;
-  left:0;
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   background: #b2ff59;
   padding: 10px;
   border-bottom: 2px solid #388e3c;
+  margin-bottom: 100px;
 
   @media (max-width: 767px) {
     flex-direction: column;
@@ -47,6 +48,9 @@ const MenuButton = styled.button`
 const NavbarLinks = styled.div`
   display: flex;
   align-items: center;
+  justify: space-between; 
+  min-width:300px
+  flex-gap: 20px;
 
   @media (max-width: 767px) {
     flex-direction: column;
@@ -58,6 +62,8 @@ const NavbarLink = styled(NavLink)`
   color: black;
   text-decoration: none;
   font-weight: 500;
+  margin-left:20px
+  margin:
 
   &.active {
     color: #2e7d32;
@@ -73,43 +79,51 @@ const LogoutButton = styled.button`
   border: none;
   cursor: pointer;
 `;
-
 const SearchInput = styled.input`
   border: 2px solid white;
   padding: 8px;
   border-radius: 8px;
   color: white;
   background: transparent;
+  position: relative;
+  width: 150px;
+
+  @media (max-width: 767px) {
+    margin-bottom: 10px;
+  }
 `;
 
+const SearchBarResults = styled.div`
+  width: 100%;
+  background-color: light-orange;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+`;
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchTask, setSearchTask] = useState('');
-  //const { userDetails, token, TaskData } = useSelector((store) => store.reducer);
+
+  const [searchTask, setSearchTask] = useState("");
+  const { role, token } = useSelector((store) => store.authReducer);
+  const { searchResults } = useSelector((store) => store.faqReducer);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  //const toast = useToast();
 
-//   const handleSearch = (e) => {
-//     setSearchTask(e.target.value);
-//   };
+  const handleSearch = (e) => {
+    const searchTerm = e.target.value;
+    setSearchTask(searchTerm);
 
-//   const debouncedSearch = debounce((query) => {
-//     // Your search logic here
-//   }, 500);
+    if (searchTerm.length >= 3) {
+      dispatch(searchQuestions(searchTerm)); 
+    }
+  };
 
-//   useEffect(() => {
-//     debouncedSearch(searchTask);
-
-//     return () => {
-//       debouncedSearch.cancel();
-//     };
-//   }, [searchTask]);
-
-//   const handleLogout = () => {
-//     // Handle logout logic here
-//   };
+  const handleLogout = () => {
+    localStorage.removeItem("role_faq");
+    localStorage.removeItem("token_faq");
+  };
 
   return (
     <>
@@ -119,31 +133,39 @@ const Navbar = () => {
         </MenuButton>
         <NavbarLinks>
           <NavbarLink to="/" end>
-            Board
+            Questions
           </NavbarLink>
-          {/* {token && token !== '' ? (
+          {token && token !== "" ? (
             <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
           ) : (
-            <> */}
+            <>
               <NavbarLink to="/login" end>
                 Login
               </NavbarLink>
-              <NavbarLink to="/register" end>
-                Sign Up
-              </NavbarLink>
-            {/* </>
-          )} */}
+            </>
+          )}
+          {role && role == "Admin" && (
+            <NavbarLink to="/admin" end>
+              Admin
+            </NavbarLink>
+          )}
         </NavbarLinks>
+
         <SearchInput
           type="search"
           minLength={3}
           placeholder="Search..."
-          //onChange={handleSearch}
+          onChange={handleSearch}
+          onKeyUp={handleSearch}
         />
       </Header>
-      {/* {searchResults && searchResults.length >= 1 && (
-        <SearchBarResults data={searchResults} />
-      )} */}
+      {searchResults &&
+        searchResults.length >= 1 &&
+        searchResults.map((el, index) => (
+          <SearchBarResults>
+            <Link to={`/faq/${el._id}`}>{el.content}</Link>
+          </SearchBarResults>
+        ))}
     </>
   );
 };

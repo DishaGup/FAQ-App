@@ -1,17 +1,16 @@
-import React, { useEffect ,useState} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { getAllQuestions } from '../redux/faq/faqAction';
-import QuestionCard from '../components/QuestionCard';
-import AddQuestionModal from '../components/AddQuestionModal';
-
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+import { getAllQuestions } from "../redux/faq/faqAction";
+import QuestionCard from "../components/QuestionCard";
+import AddQuestionModal from "../components/AddQuestionModal";
 
 const HomePageContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  margin-top:90px
 `;
-
 
 const EditIcon = styled.span`
   color: #007bff;
@@ -31,12 +30,14 @@ const AddQuestionButton = styled.button`
 const HomePage = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const {questions} = useSelector((state) => state.faqReducer);
+  const { questions } = useSelector((state) => state.faqReducer);
   const [isOpen, setIsOpen] = useState(false);
-//console.log(questions)
+  const [isAscending, setIsAscending] = useState(true); // New state for sorting
+
+  //console.log(questions)
   useEffect(() => {
-    // Fetch list of questions on component mount
-    setLoading(false)
+  
+    setLoading(false);
     dispatch(getAllQuestions()).then(() => setLoading(false));
   }, [dispatch]);
 
@@ -44,23 +45,37 @@ const HomePage = () => {
     setIsOpen(true);
   };
 
+  const toggleSortOrder = () => {
+    setIsAscending(!isAscending);
+  };
+  const sortedQuestions = [...questions].sort((a, b) => {
+    if (isAscending) {
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    } else {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+  });
   const closeModal = () => {
     setIsOpen(false);
   };
   return (
     <HomePageContainer>
       <h2>Questions</h2>
-      { loading ?  <h2>Loading...</h2> :  questions && questions.map((question) => (
-        <QuestionCard key={question._id} question={question} />    
-      ))}   
-      
+      <button onClick={toggleSortOrder}>
+        Question Order: {isAscending ? "Recent First" : "Old First"}
+      </button>
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : (
+        sortedQuestions &&
+        sortedQuestions.map((question) => (
+          <QuestionCard key={question._id} question={question} />
+        ))
+      )}
 
-      <AddQuestionButton onClick={openModal} >Add Question</AddQuestionButton>
+      <AddQuestionButton onClick={openModal}>Add Question</AddQuestionButton>
 
-      
-        {isOpen && <AddQuestionModal isOpen={isOpen} onClose={closeModal} />}
- 
-      
+      {isOpen && <AddQuestionModal isOpen={isOpen} onClose={closeModal} />}
     </HomePageContainer>
   );
 };

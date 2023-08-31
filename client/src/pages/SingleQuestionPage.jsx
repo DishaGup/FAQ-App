@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+
+import { useParams } from "react-router-dom";
 import {
   answerQuestion,
   getSingleQuestion,
   rateAnswer,
 } from "../redux/faq/faqAction";
-import { useParams } from "react-router-dom";
 
 const SingleQuestionContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  margin-top:90px
 `;
 
 const QuestionTitle = styled.h2`
@@ -84,7 +86,7 @@ const RateAnswerLabel = styled.label`
 
 const SingleQuestionPage = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { question } = useSelector((state) => state.faqReducer);
   console.log(question);
   const { questionId } = useParams();
@@ -93,17 +95,20 @@ const SingleQuestionPage = () => {
   const [rating, setRating] = useState(1);
   useEffect(() => {
     // Fetch the details of a single question along with its answers on component mount
-    setLoading(true);
-    dispatch(getSingleQuestion(questionId)).then(() => setLoading(false));
-   
-  }, [questionId]);
+    dispatch(getSingleQuestion(questionId))
+      .then(() => setLoading(false)) // Set loading to false when data is fetched
+      .catch((error) => {
+        console.error("Error fetching question:", error);
+        setLoading(false); // Set loading to false even if there's an error
+      });
+  }, [dispatch, questionId]);
+
   const handleAddAnswer = (content) => {
-    console.log(content);
     dispatch(answerQuestion(questionId, content));
     setShowAddAnswerModal(false);
   };
 
-  const handleRateAnswer = () => {
+  const handleRateAnswer = (selectedAnswerId) => {
     dispatch(rateAnswer(selectedAnswerId, questionId));
     setRating(1);
   };
@@ -120,7 +125,7 @@ const SingleQuestionPage = () => {
         Posted on: {new Date(question.createdAt).toLocaleString()}
       </AnswerTime>
       <AnswerContainer>
-        {question &&
+        {question.answers.length > 0 ? (
           question?.answers.map((answer, index) => (
             <AnswerItem key={answer._id}>
               <AnswerHeader>
@@ -137,7 +142,16 @@ const SingleQuestionPage = () => {
                 Add answer
               </button>
             </AnswerItem>
-          ))}
+          ))
+        ) : (
+          <>
+            {" "}
+            <h2>Be the first one to answer</h2>{" "}
+            <button onClick={() => setShowAddAnswerModal(true)}>
+              Add answer
+            </button>
+          </>
+        )}
       </AnswerContainer>
       {showAddAnswerModal && (
         <AddAnswerModalOverlay>

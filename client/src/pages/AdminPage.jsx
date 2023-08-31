@@ -1,8 +1,17 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { getAllPendingQuestions, approveQuestion, deleteQuestion, getAllPendingAnswers, approveAnswer, deleteAnswer, banUser } from '../redux/admin/adminActions';
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+import {
+  approveAnswer,
+  approveQuestion,
+  approveUserRegistration,
+  banUser,
+  deleteQuestion,
+  getAllUsers,
+  getPendingAnswers,
+  getPendingQuestions,
+} from "../redux/admin/adminAction";
+import { Link } from "react-router-dom";
 const AdminDashboardContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -11,11 +20,14 @@ const AdminDashboardContainer = styled.div`
 
 const AdminDashboardPage = () => {
   const dispatch = useDispatch();
-  const { pendingQuestions, pendingAnswers, users } = useSelector(state => state.adminReducer);
+  const { pendingQuestions, pendingAnswers, users } = useSelector(
+    (state) => state.adminReducer
+  );
 
   useEffect(() => {
-    dispatch(getAllPendingQuestions());
-    dispatch(getAllPendingAnswers());
+    dispatch(getPendingQuestions());
+    dispatch(getPendingAnswers());
+    dispatch(getAllUsers());
   }, [dispatch]);
 
   const handleApproveQuestion = (questionId) => {
@@ -30,12 +42,12 @@ const AdminDashboardPage = () => {
     dispatch(approveAnswer(answerId));
   };
 
-  const handleDeleteAnswer = (answerId) => {
-    dispatch(deleteAnswer(answerId));
-  };
-
   const handleBanUser = (userId) => {
     dispatch(banUser(userId));
+  };
+
+  const handleChangeRole = (userID) => {
+    dispatch(approveUserRegistration(userID));
   };
 
   return (
@@ -51,15 +63,24 @@ const AdminDashboardPage = () => {
           </tr>
         </thead>
         <tbody>
-          {pendingQuestions.map(question => (
-            <tr key={question._id}>
-              <td>{question.content}</td>
-              <td>
-                <button onClick={() => handleApproveQuestion(question._id)}>Approve</button>
-                <button onClick={() => handleDeleteQuestion(question._id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
+          {pendingQuestions &&
+            pendingQuestions.map((question) => (
+              <tr key={question._id}>
+                <Link to={`/faq/${question._id}`} target="_blank">
+                  {" "}
+                  <td>{question.content}</td>{" "}
+                </Link>
+
+                <td>
+                  <button onClick={() => handleApproveQuestion(question._id)}>
+                    Approve
+                  </button>
+                  <button onClick={() => handleDeleteQuestion(question._id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
 
@@ -73,15 +94,17 @@ const AdminDashboardPage = () => {
           </tr>
         </thead>
         <tbody>
-          {pendingAnswers.map(answer => (
-            <tr key={answer._id}>
-              <td>{answer.content}</td>
-              <td>
-                <button onClick={() => handleApproveAnswer(answer._id)}>Approve</button>
-                <button onClick={() => handleDeleteAnswer(answer._id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
+          {pendingAnswers &&
+            pendingAnswers.map((answer) => (
+              <tr key={answer._id}>
+                <td>{answer.content}</td>
+                <td>
+                  <button onClick={() => handleApproveAnswer(answer._id)}>
+                    Approve
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
 
@@ -90,19 +113,29 @@ const AdminDashboardPage = () => {
       <table>
         <thead>
           <tr>
-            <th>Username</th>
+            <th>Banned</th>
+            <th>Email</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {users.map(user => (
-            <tr key={user._id}>
-              <td>{user.username}</td>
-              <td>
-                <button onClick={() => handleBanUser(user._id)}>Ban</button>
-              </td>
-            </tr>
-          ))}
+          {users &&
+            users.map((user) => (
+              <tr key={user._id}>
+                <td>{user.isBanned ? "Yes" : "No"}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
+                <td>
+                  <button onClick={() => handleBanUser(user._id)}>Ban</button>
+                </td>
+                <td>
+                  <button onClick={() => handleChangeRole(user._id)}>
+                    Change role
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </AdminDashboardContainer>

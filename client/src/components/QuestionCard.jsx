@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {  AiOutlineMinusCircle } from "react-icons/ai";
+import { AiOutlineMinusCircle } from "react-icons/ai";
 import theme from "../styles/theme/theme";
-import { AccordionSection, AccordionWrapper, Container, Dropdown, InternalWrapper, Wrap } from "../styles/theme/Accordian";
+import {
+  AccordionSection,
+  AccordionWrapper,
+  Container,
+  Dropdown,
+  InternalWrapper,
+  Wrap,
+} from "../styles/theme/Accordian";
 import { FcPlus } from "react-icons/fc";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 const CardWrapper = styled.div`
   border: 1px solid #ccc;
   padding: 10px;
@@ -60,59 +67,57 @@ const Flex = styled.div`
   width: 90%;
 `;
 
-const Icon =styled.button`
-width:49px;
-height:49px;
-background :0 0
-`
+const Icon = styled.button`
+  width: 49px;
+  height: 49px;
+  background: 0 0;
+`;
 const QuestionCard = ({ question }) => {
-    const [clicked, setClicked] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
-    const toggle = (index) => {
-      if (clicked === index) {
-        //if clicked question is already active, then close it
-        return setClicked(false);
-      }
-  
-      setClicked(index);
-    };
-  
+  const toggle = (index) => {
+    if (clicked === index) {
+      return setClicked(false);
+    }
+
+    setClicked(index);
+  };
+
   return (
-
     <AccordionSection clicked={clicked}>
-    <Container>
-    <Wrap onClick={() => toggle(question._id)} key={question._id}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyItems: "flex-start",
-          }}
-        >
-          <Subject>{question.title}</Subject>
-        <Link to={`/faq/${question._id}`}  target="_blank">   <Question>{question.content}</Question> </Link>
-        </div>
+      <Container>
+        <Wrap onClick={() => toggle(question._id)} key={question._id}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyItems: "flex-start",
+            }}
+          >
+            <Subject>{question.title}</Subject>
+            <Link to={`/faq/${question._id}`} target="_blank">
+              {" "}
+              <Question>{question.content}</Question>{" "}
+            </Link>
+          </div>
+          {clicked === question._id ? <AiOutlineMinusCircle /> : <FcPlus />}
+        </Wrap>
         {clicked === question._id ? (
-                    <AiOutlineMinusCircle />
-                  ) : (
-                    <FcPlus  />
-                  )}
-    </Wrap>
-    {clicked === question._id ? (
-                
-                  <Dropdown>
-        <AnswersWrapper>
-          {question.answers.map((answer) => (
-            <Answer key={answer._id}>
-              <AnswerContent>{answer.content}</AnswerContent>
-              <AnswerRating>Rating: {answer.rating}</AnswerRating>
-            </Answer>
-          ))}
-        </AnswersWrapper>
-        </Dropdown>
-               
-              ) : null}
-           
+          <Dropdown>
+            <AnswersWrapper>
+              {question.answers != null ? (
+                question.answers.map((answer) => (
+                  <Answer key={answer._id}>
+                    <AnswerContent>{answer.content}</AnswerContent>
+                    <AnswerRating>Rating: {answer.rating}</AnswerRating>
+                  </Answer>
+                ))
+              ) : (
+                <> Be the first one to answer. </>
+              )}
+            </AnswersWrapper>
+          </Dropdown>
+        ) : null}
       </Container>
     </AccordionSection>
   );

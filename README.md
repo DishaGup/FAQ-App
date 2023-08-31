@@ -101,3 +101,6 @@ The backend of the application is built using Node.js with Express.js. It provid
 ## Contributing
 
 Contributions are welcome! Please fork the repository and create a pull request.
+
+
+## SnapShots 

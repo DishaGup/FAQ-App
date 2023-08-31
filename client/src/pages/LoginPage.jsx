@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { PrimaryButton } from '../styles/Button';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { PrimaryButton } from "../styles/Button";
 
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { loginRequest } from '../redux/auth/authAction';
-import ErrorAlert from '../styles/ErrorAlert';
+import { loginRequest } from "../redux/auth/authAction";
+import ErrorAlert from "../styles/ErrorAlert";
 const initialFormData = {
-  email: '',
-  password: '',
+  email: "",
+  password: "",
 };
 
 const Container = styled.div`
@@ -86,8 +86,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const navigate = useNavigate();
-  const { error ,token } = useSelector((store) => store.authReducer);
-  console.log(error,token)
+  const { error, token } = useSelector((store) => store.authReducer);
+  console.log(error, token);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -98,15 +98,13 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit =(e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-   
+
     try {
-       dispatch(loginRequest(formData));
-      // Rest of your logic for success
+      dispatch(loginRequest(formData)).then(() => navigate("/"));
     } catch (err) {
-      // Rest of your logic for error
-      console.log(err)
+      console.log(err);
     }
     setFormData(initialFormData);
   };
@@ -115,9 +113,7 @@ const Login = () => {
     <Container>
       <FormBox>
         <StyledH2>Login</StyledH2>
-        {
-          error != null && <ErrorAlert message={error} /> 
-        }
+        {error != null && <ErrorAlert message={error} />}
         <StyledForm onSubmit={handleSubmit}>
           <StyledLabel>
             <StyledText as="span">Email</StyledText>
@@ -137,7 +133,7 @@ const Login = () => {
               placeholder="Type Password"
               value={formData.password}
               onChange={handleChange}
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
             />
             <PasswordToggle onClick={() => setShowPassword((prev) => !prev)}>
               {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}

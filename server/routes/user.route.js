@@ -24,11 +24,11 @@ userRouter.post("/register", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: newUser._id, role: newUser.role },
-      "orion" 
+      "orion"
     );
 
     // Send token and user ID to the client
-    res.status(201).json({ token, userId: newUser._id });
+    res.status(201).json({ token, role: newUser.role, userId: newUser._id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -39,7 +39,9 @@ userRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ error: "Email not exists! Please register" });
+      return res
+        .status(401)
+        .json({ error: "Email not exists! Please register" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -48,18 +50,14 @@ userRouter.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      "orion" 
-    );
+    const token = jwt.sign({ userId: user._id, role: user.role }, "orion");
 
     // Send token to the client
-    res.json({ token });
+    res.json({ token, role: user.role, userId: user._id });
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
   }
 });
-
 
 userRouter.get("/", async (req, res) => {
   try {
@@ -69,7 +67,29 @@ userRouter.get("/", async (req, res) => {
     res.status(400).json({ error: error.messsage });
   }
 });
+userRouter.put("/:userId/change-role", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
 
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
+    const newRole = user.role === "User" ? "Admin" : "User";
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { role: newRole } },
+      { new: true }
+    );
+
+    res
+      .status(200)
+      .json({ message: "User role updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 
 module.exports = userRouter;
