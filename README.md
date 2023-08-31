@@ -1,5 +1,5 @@
 
-```markdown
+
 # FAQ App
 
 This is an FAQ (Frequently Asked Questions) application that allows users to ask questions, receive answers, and interact with the community. The application includes both a frontend and a backend component.
@@ -103,4 +103,9 @@ The backend of the application is built using Node.js with Express.js. It provid
 Contributions are welcome! Please fork the repository and create a pull request.
 
 
-## SnapShots 
+## SnapShots
+
+![Screenshot (317)](https://github.com/DishaGup/FAQ-App/assets/115460391/faa9d5d1-4d14-4f44-8f8e-14a4e7010a3f)
+
+
+![Screenshot (318)](https://github.com/DishaGup/FAQ-App/assets/115460391/bee9001e-e1b7-4fd1-b10c-7bd8df45ace6)
