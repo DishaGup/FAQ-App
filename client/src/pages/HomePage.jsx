@@ -30,12 +30,14 @@ const AddQuestionButton = styled.button`
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const {questions} = useSelector((state) => state.faqReducer);
   const [isOpen, setIsOpen] = useState(false);
 //console.log(questions)
   useEffect(() => {
     // Fetch list of questions on component mount
-    dispatch(getAllQuestions());
+    setLoading(false)
+    dispatch(getAllQuestions()).then(() => setLoading(false));
   }, [dispatch]);
 
   const openModal = () => {
@@ -48,9 +50,11 @@ const HomePage = () => {
   return (
     <HomePageContainer>
       <h2>Questions</h2>
-      {questions && questions.map((question) => (
+      { loading ?  <h2>Loading...</h2> :  questions && questions.map((question) => (
         <QuestionCard key={question._id} question={question} />    
-      ))}
+      ))}   
+      
+
       <AddQuestionButton onClick={openModal} >Add Question</AddQuestionButton>
 
       

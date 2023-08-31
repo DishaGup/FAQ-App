@@ -84,7 +84,7 @@ const RateAnswerLabel = styled.label`
 
 const SingleQuestionPage = () => {
   const dispatch = useDispatch();
-  const [loading, setLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { question } = useSelector((state) => state.faqReducer);
   console.log(question);
   const { questionId } = useParams();
@@ -93,9 +93,9 @@ const SingleQuestionPage = () => {
   const [rating, setRating] = useState(1);
   useEffect(() => {
     // Fetch the details of a single question along with its answers on component mount
-    setLogin(true);
-    dispatch(getSingleQuestion(questionId));
-    setLogin(false);
+    setLoading(true);
+    dispatch(getSingleQuestion(questionId)).then(() => setLoading(false));
+   
   }, [questionId]);
   const handleAddAnswer = (content) => {
     console.log(content);
