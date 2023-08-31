@@ -1,38 +1,91 @@
-.App {
-  text-align: center;
+
+
+
+/*-----------------------------------*\
+ * #CUSTOM PROPERTY
+\*-----------------------------------*/
+
+:root {
+
+  /**
+   * colors
+   */
+
+  --rich-black-fogra-29: hsl(240, 13%, 8%);
+  --silver-chalice: hsl(0, 0%, 70%);
+  --floral-white: hsl(38, 100%, 98%);
+  --raisin-black: hsl(240, 8%, 18%);
+  --sonic-silver: hsl(240, 3%, 45%);
+  --mango-tango: hsl(20, 100%, 64%);
+  --orange-web: hsl(39, 100%, 50%);
+  --cultured: hsl(210, 17%, 98%);
+  --mantis: hsl(118, 41%, 62%);
+  --gambog: hsl(39, 100%, 45%);
+  --black: hsl(0, 0%, 0%);
+  --white: hsl(0, 0%, 100%);
+  --onyx: hsl(0, 0%, 23%);
+
+  --gradient: linear-gradient(90deg, hsl(38, 100%, 98%) 21.32%, hsl(144, 45%, 98%) 130%);
+
+  /**
+   * typography
+   */
+
+  --ff-poppins: 'Poppins', sans-serif;
+  --ff-rubik: 'Rubik', sans-serif;
+  --dm-sans: 'DM Sans', sans-serif;
+
+  --fs-1: 30px;
+  --fs-2: 28px;
+  --fs-3: 24px;
+  --fs-4: 20px;
+  --fs-5: 18px;
+
+  --fw-500: 500;
+  --fw-700: 700;
+
+  /**
+   * transition
+   */
+
+  --transition: 0.2s ease-in-out;
+
+  /**
+   * spacing
+   */
+
+  --section-padding: 80px;
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+
+/*-----------------------------------*\
+ * #RESET
+\*-----------------------------------*/
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+li { list-style: none; }
+
+a { text-decoration: none; }
+
+a,
+img,
+span,
+button{ display: block; }
+
+button {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+html { scroll-behavior: smooth; }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+body { background: var(--white); }

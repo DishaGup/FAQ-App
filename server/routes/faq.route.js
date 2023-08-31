@@ -9,9 +9,13 @@ const verifyToken = require("../middleware/verifyToken");
 
 faqRouter.get("/questions", async (req, res) => {
   try {
-    const question = await Question.find();
-
-    res.status(201).json(question);
+    const questions = await Question.find()
+      .populate({
+        path: "answers",
+        options: { sort: { rating: -1 }, limit: 4 }, // Sort by rating in descending order and limit to 4 answers
+      })
+      .exec();
+    res.status(201).json(questions);
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
   }
@@ -108,7 +112,6 @@ faqRouter.put("/ban/:userId", verifyToken, async (req, res) => {
 
 faqRouter.post("/answer/:answerId/rate", verifyToken, async (req, res) => {
   try {
-    const { rating } = req.body;
     const user = req.user.userId;
     const answerId = req.params.answerId;
 
@@ -120,7 +123,7 @@ faqRouter.post("/answer/:answerId/rate", verifyToken, async (req, res) => {
     }
 
     // Update the answer's rating and save it
-    answer.rating = rating;
+    answer.rating += 1;
     await answer.save();
 
     res.status(200).json({ message: "Answer rated successfully" });
@@ -135,7 +138,7 @@ faqRouter.get("/question/:questionId", async (req, res) => {
     const questionId = req.params.questionId;
 
     // Find the question by its ID and populate its answers
-    const question = await Question.findById(questionId).populate('answers');
+    const question = await Question.findById(questionId).populate("answers");
 
     if (!question) {
       return res.status(404).json({ error: "Question not found" });

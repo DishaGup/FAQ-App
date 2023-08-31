@@ -16,7 +16,8 @@ app.use('/api/user', userRouter);
 app.use('/api/faq', verifyToken, faqRouter);
 // Connect to MongoDB
 const mongoURI = process.env.MongoDB_URL
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+
+mongoose.connect(mongoURI)
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {
